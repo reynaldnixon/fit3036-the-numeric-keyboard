@@ -1,0 +1,210 @@
+<html>
+<head>
+<link rel = "stylesheet" href="/editor.css">
+
+<!-- Script needed to run Jquery and Socket io -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+
+    
+</head>
+    
+<body>
+    
+        <div class="split left">
+                   <h1 style="font-size: 2vw;">Numpad Text Editor</h1>
+                   <br/> 
+                   <input type="text" id="userInput" placeholder="Type here">
+                   <br/> 
+                   <br/>
+                   Current Input:<div id="incomingChatMessages" contentEditable=true data-text="-"></div>
+                   <br/>  
+                   <br/> 
+                   <h2> Current Document </h2>
+                   <textarea id="result" rows="20" cols=40></textarea>
+                  </div>
+        </div>
+
+        <div class="split right">
+          <h1 style="font-size: 2vw;">Numeric Keypad Combo Cheatsheet</h1>
+          <br>
+          <br>
+                <div class="cheatsheet">
+                  <img src="Cheatsheet.png" style="width:70%;height:auto;margin-right: 25%;">
+                </div>
+        </div>
+      
+        
+              
+
+</body>
+</html>
+
+
+<script type="text/javascript">
+
+//Turning on socket.io to send message between server and client
+var socket = io.connect();
+
+      //On 'broad' event, append message from server to incomingChatMessages
+      socket.on('broad', function(message) {
+            $('#incomingChatMessages').append(message);
+      });
+
+      //On the event 'letter' , the following code will run
+      socket.on('letter',function(message){
+        //If message is backspace, then slice the last word from the result section
+        if (message === "backspace"){
+          var len = document.getElementById("result").value.length;
+          var sliced = document.getElementById("result").value.slice(0,len-1);
+          document.getElementById("result").value = sliced;
+          $('#incomingChatMessages').html('');
+        }
+
+        //Else, add new letter to the result section
+        else{
+            document.getElementById("result").value += message;
+            $('#incomingChatMessages').html('');
+            console.log("Message received from server is: " + message);
+          }
+      });         
+
+var keyAllowed = {};
+
+//On user keypress (keydown)
+$('#userInput').keydown(function(event) {
+    if (keyAllowed [event.which] === false) return;
+    keyAllowed [event.which] = false;
+
+    //If enter is pressed, then send an 'enter' event to server
+    if(event.which == 13 || event.which == 75) {
+          event.preventDefault();
+          socket.emit('enter','enter send');
+     }
+
+     //Below is the event keypresses/ mapping
+     event.preventDefault()
+     var keyCode = event.keyCode || event.which;
+     console.log(keyCode);
+     
+     //If keypress is numpad 0
+     if (keyCode == 96){
+      socket.emit('message','0');
+     }
+     
+     //If keypress is numpad 1
+     else if (keyCode == 97) {
+       socket.emit('message','1');
+     }
+     
+     //If keypress is numpad 2
+     else if(keyCode == 98){
+       socket.emit('message','2');
+     }
+     
+     //If keypress is numpad 3
+     else if(keyCode == 99){
+       socket.emit('message','3');
+     }
+     
+     //If keypress is numpad 4
+     else if(keyCode == 100){
+       socket.emit('message','4');
+     }
+     
+     //If keypress is numpad 5
+     else if(keyCode == 101){
+       socket.emit('message','5');
+     }
+
+     //If keypress is numpad 6
+     else if(keyCode == 102){
+       socket.emit('message','6');
+     }
+
+     //If keypress is numpad 7
+     else if(keyCode == 103){
+       socket.emit('message','7');
+     }
+     
+     //If keypress is numpad 8
+     else if(keyCode == 104){
+       socket.emit('message','8');
+     }
+
+     //If keypress is numpad 9
+     else if(keyCode == 105){
+       socket.emit('message','9');
+     }
+
+     //If keypress is Spacebar
+     else if(keyCode == 32){
+       socket.emit('message','0');
+     }
+
+     //If keypress is B
+     else if(keyCode == 66){
+       socket.emit('message','1');
+     }
+     
+     //If keypress is N
+     else if(keyCode == 78){
+       socket.emit('message','2');
+     }
+
+     //If keypress is M
+     else if(keyCode == 77){
+       socket.emit('message','3');
+     }
+     
+     //If keypress is G
+     else if(keyCode == 71){
+       socket.emit('message','4');
+     }
+
+     //If keypress is h
+     else if(keyCode == 72){
+       socket.emit('message','5');
+     }
+
+     //If keypress is J
+     else if(keyCode == 74){
+       socket.emit('message','6');
+     }
+
+     //If keypress is T
+     else if(keyCode == 84){
+       socket.emit('message','7');
+     }
+
+     //If keypress is Y
+     else if(keyCode == 89){
+       socket.emit('message','8');
+     }
+
+     //If keypress is U
+     else if(keyCode == 85){
+       socket.emit('message','9');
+     }
+
+     //If keypress is the numpad substract button
+     else if(keyCode == 109){
+       socket.emit('message','backspace');
+     }
+
+     //If keypress is I
+     else if(keyCode == 73){
+       socket.emit('message','backspace');
+     }
+
+ });
+
+//These are the codes to prevent multiple detection when the key pressed is on hold
+ $('#userInput').keyup(function(event) {
+   keyAllowed [event.which] = true;
+ });
+
+ $('#userInput').focus(function (event) {
+   keyAllowed = {};
+ });
+</script>

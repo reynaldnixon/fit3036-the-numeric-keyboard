@@ -1,0 +1,18 @@
+{
+  "name": "thenumerickeyboard",
+  "version": "1.0.0",
+  "description": "FIT3036 Project by Reynald Nixon 27022722, creating a keyboard based on numeric keypad only",
+  "private": true,
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^2.6.1",
+    "express": "^4.16.3",
+    "file-system": "^2.2.2",
+    "socketio": "^1.0.0"
+  }
+}
